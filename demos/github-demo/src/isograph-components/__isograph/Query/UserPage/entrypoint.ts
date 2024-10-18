@@ -17,6 +17,7 @@ const queryText = 'query UserPage ($userLogin: String!) {\
           name,\
           nameWithOwner,\
           owner {\
+            __typename,\
             id,\
             login,\
           },\
@@ -118,6 +119,11 @@ const normalizationAst: NormalizationAst = [
                     fieldName: "owner",
                     arguments: null,
                     selections: [
+                      {
+                        kind: "Scalar",
+                        fieldName: "__typename",
+                        arguments: null,
+                      },
                       {
                         kind: "Scalar",
                         fieldName: "id",

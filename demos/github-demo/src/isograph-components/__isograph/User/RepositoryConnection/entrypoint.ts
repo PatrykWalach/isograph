@@ -18,6 +18,7 @@ const queryText = 'query RepositoryConnection ($first: Int, $after: String, $id:
             name,\
             nameWithOwner,\
             owner {\
+              __typename,\
               id,\
               login,\
             },\
@@ -119,6 +120,11 @@ const normalizationAst: NormalizationAst = [
                         fieldName: "owner",
                         arguments: null,
                         selections: [
+                          {
+                            kind: "Scalar",
+                            fieldName: "__typename",
+                            arguments: null,
+                          },
                           {
                             kind: "Scalar",
                             fieldName: "id",
