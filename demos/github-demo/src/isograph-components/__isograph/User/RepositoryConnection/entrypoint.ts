@@ -9,7 +9,7 @@ const queryText = 'query RepositoryConnection ($first: Int, $after: String, $id:
     ... on User {\
       __typename,\
       id,\
-      repositories____last___v_first____before___v_after: repositories(last: $first, before: $after) {\
+      repositories____first___v_first____after___v_after: repositories(first: $first, after: $after) {\
         edges {\
           node {\
             id,\
@@ -31,8 +31,8 @@ const queryText = 'query RepositoryConnection ($first: Int, $after: String, $id:
           },\
         },\
         pageInfo {\
-          hasPreviousPage,\
-          startCursor,\
+          endCursor,\
+          hasNextPage,\
         },\
       },\
     },\
@@ -69,12 +69,12 @@ const normalizationAst: NormalizationAst = [
             fieldName: "repositories",
             arguments: [
               [
-                "last",
+                "first",
                 { kind: "Variable", name: "first" },
               ],
 
               [
-                "before",
+                "after",
                 { kind: "Variable", name: "after" },
               ],
             ],
@@ -171,12 +171,12 @@ const normalizationAst: NormalizationAst = [
                 selections: [
                   {
                     kind: "Scalar",
-                    fieldName: "hasPreviousPage",
+                    fieldName: "endCursor",
                     arguments: null,
                   },
                   {
                     kind: "Scalar",
-                    fieldName: "startCursor",
+                    fieldName: "hasNextPage",
                     arguments: null,
                   },
                 ],

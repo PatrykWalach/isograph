@@ -12,11 +12,11 @@ Information to aid in pagination.
       */
       readonly pageInfo: {
         /**
-When paginating backwards, are there more items?
+When paginating forwards, are there more items?
         */
         readonly hasNextPage: boolean,
         /**
-When paginating backwards, the cursor to continue.
+When paginating forwards, the cursor to continue.
         */
         readonly endCursor: (string | null),
       },

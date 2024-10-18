@@ -20,10 +20,18 @@ import { useIsographEnvironment } from '../react/IsographEnvironmentProvider';
 import { useSubscribeToMultiple } from '../react/useReadAndSubscribe';
 import { maybeUnwrapNetworkRequest } from '../react/useResult';
 
-type FirstOrAfter = 'first' | 'after';
-type OmitFirstAfter<TArgs> = keyof Omit<TArgs, FirstOrAfter> extends never
-  ? void | Record<string, never>
-  : Omit<TArgs, FirstOrAfter>;
+type First = 'first';
+
+type AreAllKeysOptional<T> = {
+  [K in keyof T]: undefined extends T[K] ? true : false;
+}[keyof T] extends true
+  ? true
+  : false;
+
+type OmitFirst<TArgs> =
+  AreAllKeysOptional<Omit<TArgs, First>> extends true
+    ? [initialArgs?: Record<string, never>]
+    : [initialArgs: Omit<TArgs, First>];
 
 type UsePaginationReturnValue<
   TReadFromStore extends { parameters: object; data: object },
@@ -36,10 +44,7 @@ type UsePaginationReturnValue<
     }
   | {
       kind: 'Complete';
-      fetchMore: (
-        args: OmitFirstAfter<TReadFromStore['parameters']>,
-        first: number,
-      ) => void;
+      fetchMore: (first: number) => void;
       results: ReadonlyArray<TItem>;
       hasNextPage: boolean;
     };
@@ -92,11 +97,14 @@ export function useConnectionSpecPagination<
   TItem,
 >(
   loadableField: LoadableField<TReadFromStore, Connection<TItem>>,
+  ...[initialArgs]: OmitFirst<TReadFromStore['parameters']>
 ): UsePaginationReturnValue<TReadFromStore, TItem> {
   const networkRequestOptions = {
     suspendIfInFlight: true,
     throwOnNetworkError: true,
   };
+
+  const [args] = useState(initialArgs);
   const { state, setState } =
     useUpdatableDisposableState<
       LoadedFragmentReferences<TReadFromStore, Connection<TItem>>
@@ -179,14 +187,11 @@ export function useConnectionSpecPagination<
 
   const getFetchMore =
     (after: string | null | undefined) =>
-    (
-      args: OmitFirstAfter<TReadFromStore['parameters']>,
-      first: number,
-    ): void => {
+    (first: number): void => {
       // @ts-expect-error
       const loadedField = loadableField({
         ...args,
-        after: after,
+        after: after ?? args?.after,
         first: first,
       })[1]();
       const newPointer = createReferenceCountedPointer(loadedField);

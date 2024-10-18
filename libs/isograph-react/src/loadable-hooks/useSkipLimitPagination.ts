@@ -18,19 +18,26 @@ import { getPromiseState, readPromise } from '../core/PromiseWrapper';
 import { type WithEncounteredRecords } from '../core/read';
 import { useSubscribeToMultiple } from '../react/useReadAndSubscribe';
 
-type SkipOrLimit = 'skip' | 'limit';
-type OmitSkipLimit<TArgs> = keyof Omit<TArgs, SkipOrLimit> extends never
-  ? void | Record<string, never>
-  : Omit<TArgs, SkipOrLimit>;
+type Limit = 'limit';
+
+type AreAllKeysOptional<T> = {
+  [K in keyof T]: undefined extends T[K] ? true : false;
+}[keyof T] extends true
+  ? true
+  : false;
+
+type OmitLimit<TArgs> =
+  AreAllKeysOptional<Omit<TArgs, Limit>> extends true
+    ? [initialArgs?: Record<string, never>]
+    : [initialArgs: Omit<TArgs, Limit>];
 
 type UseSkipLimitReturnValue<
   TReadFromStore extends { data: object; parameters: object },
-  TArgs,
   TItem,
 > =
   | {
       readonly kind: 'Complete';
-      readonly fetchMore: (args: OmitSkipLimit<TArgs>, count: number) => void;
+      readonly fetchMore: (count: number) => void;
       readonly results: ReadonlyArray<TItem>;
     }
   | {
@@ -70,15 +77,18 @@ function flatten<T>(arr: ReadonlyArray<ReadonlyArray<T>>): ReadonlyArray<T> {
 }
 
 export function useSkipLimitPagination<
-  TArgs extends {
-    skip: number | void | null;
-    limit: number | void | null;
+  TReadFromStore extends {
+    parameters: {
+      readonly skip?: number | void | null;
+      readonly limit?: number | void | null;
+    };
+    data: object;
   },
   TItem,
-  TReadFromStore extends { parameters: TArgs; data: object },
 >(
   loadableField: LoadableField<TReadFromStore, ReadonlyArray<TItem>>,
-): UseSkipLimitReturnValue<TReadFromStore, TArgs, TItem> {
+  ...[initialVariables]: OmitLimit<TReadFromStore['parameters']>
+): UseSkipLimitReturnValue<TReadFromStore, TItem> {
   const networkRequestOptions = {
     suspendIfInFlight: true,
     throwOnNetworkError: true,
@@ -87,6 +97,8 @@ export function useSkipLimitPagination<
     useUpdatableDisposableState<
       LoadedFragmentReferences<TReadFromStore, TItem>
     >();
+
+  const [args] = useState(initialVariables);
 
   const environment = useIsographEnvironment();
 
@@ -157,12 +169,12 @@ export function useSkipLimitPagination<
   }
 
   const getFetchMore =
-    (loadedSoFar: number) =>
-    (args: OmitSkipLimit<TArgs>, count: number): void => {
+    (_loadedSoFar: number) =>
+    (count: number): void => {
       // @ts-expect-error
       const loadedField = loadableField({
         ...args,
-        skip: loadedSoFar,
+        skip: args?.skip ?? 0,
         limit: count,
       })[1]();
       const newPointer = createReferenceCountedPointer(loadedField);

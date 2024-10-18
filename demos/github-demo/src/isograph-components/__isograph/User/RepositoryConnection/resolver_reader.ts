@@ -11,12 +11,12 @@ const readerAst: ReaderAst<User__RepositoryConnection__param> = [
     alias: null,
     arguments: [
       [
-        "last",
+        "first",
         { kind: "Variable", name: "first" },
       ],
 
       [
-        "before",
+        "after",
         { kind: "Variable", name: "after" },
       ],
     ],
@@ -29,14 +29,14 @@ const readerAst: ReaderAst<User__RepositoryConnection__param> = [
         selections: [
           {
             kind: "Scalar",
-            fieldName: "hasPreviousPage",
-            alias: "hasNextPage",
+            fieldName: "hasNextPage",
+            alias: null,
             arguments: null,
           },
           {
             kind: "Scalar",
-            fieldName: "startCursor",
-            alias: "endCursor",
+            fieldName: "endCursor",
+            alias: null,
             arguments: null,
           },
         ],
