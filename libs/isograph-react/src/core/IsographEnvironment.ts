@@ -39,7 +39,7 @@ type AnyRecordSubscription = {
 };
 
 type Subscription =
-  | FragmentSubscription<{ parameters: object; data: object }>
+  | FragmentSubscription<{ parameters: Variables; data: object }>
   | AnyChangesToRecordSubscription
   | AnyRecordSubscription;
 type Subscriptions = Set<Subscription>;

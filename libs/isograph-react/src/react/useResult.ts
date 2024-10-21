@@ -1,5 +1,5 @@
 import { useIsographEnvironment } from '../react/IsographEnvironmentProvider';
-import { FragmentReference } from '../core/FragmentReference';
+import { FragmentReference, type Variables } from '../core/FragmentReference';
 import { getOrCreateCachedComponent } from '../core/componentCache';
 import { useReadAndSubscribe } from './useReadAndSubscribe';
 import {
@@ -13,7 +13,7 @@ import {
 } from '../core/PromiseWrapper';
 
 export function useResult<
-  TReadFromStore extends { parameters: object; data: object },
+  TReadFromStore extends { parameters: Variables; data: object },
   TClientFieldValue,
 >(
   fragmentReference: FragmentReference<TReadFromStore, TClientFieldValue>,

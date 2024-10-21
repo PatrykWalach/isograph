@@ -71,8 +71,8 @@ function flatten<T>(arr: ReadonlyArray<ReadonlyArray<T>>): ReadonlyArray<T> {
 
 export function useSkipLimitPagination<
   TArgs extends {
-    skip: number | void | null;
-    limit: number | void | null;
+    skip: number | null;
+    limit: number | null;
   },
   TItem,
   TReadFromStore extends { parameters: TArgs; data: object },

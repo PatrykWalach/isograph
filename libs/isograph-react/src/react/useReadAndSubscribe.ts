@@ -3,6 +3,7 @@ import {
   FragmentReference,
   stableIdForFragmentReference,
   ExtractData,
+  type Variables,
 } from '../core/FragmentReference';
 import {
   NetworkRequestReaderOptions,
@@ -18,7 +19,7 @@ import type { ReaderAst } from '../core/reader';
  * Read the data from a fragment reference and subscribe to updates.
  */
 export function useReadAndSubscribe<
-  TReadFromStore extends { parameters: object; data: object },
+  TReadFromStore extends { parameters: Variables; data: object },
 >(
   fragmentReference: FragmentReference<TReadFromStore, any>,
   networkRequestOptions: NetworkRequestReaderOptions,

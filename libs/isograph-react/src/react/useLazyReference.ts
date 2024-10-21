@@ -1,6 +1,7 @@
 import {
   FragmentReference,
   ExtractParameters,
+  type Variables,
 } from '../core/FragmentReference';
 import { useIsographEnvironment } from './IsographEnvironmentProvider';
 import { IsographEntrypoint } from '../core/entrypoint';
@@ -8,7 +9,7 @@ import { getOrCreateCacheForArtifact } from '../core/cache';
 import { useLazyDisposableState } from '@isograph/react-disposable-state';
 
 export function useLazyReference<
-  TReadFromStore extends { parameters: object; data: object },
+  TReadFromStore extends { parameters: Variables; data: object },
   TClientFieldValue,
 >(
   entrypoint: IsographEntrypoint<TReadFromStore, TClientFieldValue>,

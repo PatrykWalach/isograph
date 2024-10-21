@@ -81,7 +81,7 @@ export function stableCopy<T>(value: T): T {
 }
 
 export function getOrCreateCacheForArtifact<
-  TReadFromStore extends { parameters: object; data: object },
+  TReadFromStore extends { parameters: Variables; data: object },
   TClientFieldValue,
 >(
   environment: IsographEnvironment,
@@ -209,13 +209,13 @@ export function subscribe<
   ) => void,
   readerAst: ReaderAst<TReadFromStore>,
 ): () => void {
-  const fragmentSubscription: FragmentSubscription<TReadFromStore> = {
+  const fragmentSubscription: any = {
     kind: 'FragmentSubscription',
     callback,
     encounteredDataAndRecords,
     fragmentReference,
     readerAst,
-  };
+  } satisfies FragmentSubscription<TReadFromStore>;
   environment.subscriptions.add(fragmentSubscription);
   return () => environment.subscriptions.delete(fragmentSubscription);
 }

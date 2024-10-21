@@ -7,17 +7,17 @@ export type VariableValue = string | number | boolean | null | object;
 
 export type Variables = { readonly [index: string]: VariableValue };
 
-export type ExtractData<T> = T extends {
-  data: infer D extends object;
-}
-  ? D
-  : never;
+export type ExtractData<
+  T extends {
+    data: object;
+  },
+> = T['data'];
 
-export type ExtractParameters<T> = T extends {
-  parameters: infer P extends Variables;
-}
-  ? P
-  : Variables;
+export type ExtractParameters<
+  T extends {
+    parameters: object;
+  },
+> = T['parameters'];
 
 export type FragmentReference<
   TReadFromStore extends { parameters: object; data: object },

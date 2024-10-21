@@ -29,13 +29,17 @@ import {
 import { ReaderAst } from './reader';
 import { Arguments } from './util';
 
-export type WithEncounteredRecords<T> = {
+export type WithEncounteredRecords<
+  T extends {
+    data: object;
+  },
+> = {
   readonly encounteredRecords: Set<DataId>;
   readonly item: ExtractData<T>;
 };
 
 export function readButDoNotEvaluate<
-  TReadFromStore extends { parameters: object; data: object },
+  TReadFromStore extends { parameters: Variables; data: object },
 >(
   environment: IsographEnvironment,
   fragmentReference: FragmentReference<TReadFromStore, unknown>,
@@ -90,7 +94,9 @@ export function readButDoNotEvaluate<
   }
 }
 
-type ReadDataResult<TReadFromStore> =
+type ReadDataResult<
+  TReadFromStore extends { parameters: Variables; data: object },
+> =
   | {
       readonly kind: 'Success';
       readonly data: ExtractData<TReadFromStore>;
@@ -99,11 +105,16 @@ type ReadDataResult<TReadFromStore> =
   | {
       readonly kind: 'MissingData';
       readonly reason: string;
-      readonly nestedReason?: ReadDataResult<unknown>;
+      readonly nestedReason?: ReadDataResult<{
+        parameters: Variables;
+        data: object;
+      }>;
       readonly recordId: DataId;
     };
 
-function readData<TReadFromStore>(
+function readData<
+  TReadFromStore extends { parameters: Variables; data: object },
+>(
   environment: IsographEnvironment,
   ast: ReaderAst<TReadFromStore>,
   root: DataId,
