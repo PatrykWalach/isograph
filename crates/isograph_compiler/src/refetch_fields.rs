@@ -57,7 +57,7 @@ fn add_refetch_field_to_object(
                 unwraps: vec![],
                 variant: ClientFieldVariant::ImperativelyLoadedField(
                     ImperativelyLoadedFieldVariant {
-                        client_field_scalar_selection_name: *REFETCH_FIELD_NAME,
+                        client_field_selection_name: (*REFETCH_FIELD_NAME).into(),
                         top_level_schema_field_name: *NODE_FIELD_NAME,
                         top_level_schema_field_arguments: id_arguments(),
                         top_level_schema_field_concrete_type: None,

@@ -1,7 +1,6 @@
 use common_lang_types::{
     ConstExportName, FilePath, IsographDirectiveName, IsographObjectTypeName, LinkedFieldName,
-    Location, ScalarFieldName, SelectableFieldName, TextSource, UnvalidatedTypeName, WithLocation,
-    WithSpan,
+    Location, SelectableFieldName, TextSource, UnvalidatedTypeName, WithLocation, WithSpan,
 };
 use intern::string_key::Intern;
 use isograph_lang_types::{
@@ -163,7 +162,7 @@ pub struct PrimaryFieldInfo {
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct ImperativelyLoadedFieldVariant {
-    pub client_field_scalar_selection_name: ScalarFieldName,
+    pub client_field_selection_name: SelectableFieldName,
     /// What field should we select when generating the refetch query?
     pub top_level_schema_field_name: LinkedFieldName,
     /// The arguments we must pass to the top level schema field, e.g. id: ID!

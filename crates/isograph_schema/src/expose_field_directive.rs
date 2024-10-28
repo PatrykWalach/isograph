@@ -242,7 +242,7 @@ impl UnvalidatedSchema {
                 unwraps: vec![],
                 variant: ClientFieldVariant::ImperativelyLoadedField(
                     ImperativelyLoadedFieldVariant {
-                        client_field_scalar_selection_name: client_field_scalar_selection_name
+                        client_field_selection_name: client_field_scalar_selection_name
                             .lookup()
                             .intern()
                             .into(),

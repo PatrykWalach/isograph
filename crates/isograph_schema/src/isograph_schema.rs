@@ -515,11 +515,13 @@ pub struct ClientPointer<
     pub name: ClientPointerFieldName,
     pub id: ClientPointerId,
 
-    pub reader_selection_set: Vec<
-        WithSpan<
-            Selection<
-                TClientPointerSelectionScalarFieldAssociatedData,
-                TClientPointerSelectionLinkedFieldAssociatedData,
+    pub reader_selection_set: Option<
+        Vec<
+            WithSpan<
+                Selection<
+                    TClientPointerSelectionScalarFieldAssociatedData,
+                    TClientPointerSelectionLinkedFieldAssociatedData,
+                >,
             >,
         >,
     >,

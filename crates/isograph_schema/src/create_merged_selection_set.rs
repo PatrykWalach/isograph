@@ -489,7 +489,7 @@ fn process_imperatively_loaded_field(
     client_field: &ValidatedClientField,
 ) -> ImperativelyLoadedFieldArtifactInfo {
     let ImperativelyLoadedFieldVariant {
-        client_field_scalar_selection_name,
+        client_field_selection_name: client_field_scalar_selection_name,
         top_level_schema_field_name,
         top_level_schema_field_arguments,
         top_level_schema_field_concrete_type,
