@@ -485,12 +485,13 @@ fn validate_and_transform_client_fields(
         },
     ))?;
 
-    get_all_errors_or_all_ok_iter(client_fields.into_iter().map(|client_field| {
+    get_all_errors_or_all_ok_iter(client_fields.iter().map(|client_field| {
         validate_client_field_selection_set(
             schema_data,
             client_field,
             server_fields,
             &client_field_args,
+            &client_fields,
         )
         .map_err(|err| err.into_iter())
     }))
@@ -529,9 +530,10 @@ fn validate_all_variables_are_used(
 
 fn validate_client_field_selection_set(
     schema_data: &ServerFieldData,
-    unvalidated_client_field: UnvalidatedClientField,
+    unvalidated_client_field: &UnvalidatedClientField,
     server_fields: &[ValidatedSchemaServerField],
     client_field_args: &ClientFieldArgsMap,
+    client_fields: &[UnvalidatedClientField],
 ) -> Result<ValidatedClientField, Vec<WithLocation<ValidateSchemaError>>> {
     let variable_definitions = client_field_args
         .get(&unvalidated_client_field.id)
@@ -544,6 +546,7 @@ fn validate_client_field_selection_set(
     let parent_object = schema_data.object(unvalidated_client_field.parent_object_id);
     let selection_set_result = unvalidated_client_field
         .reader_selection_set
+        .as_ref()
         .map(|selection_set| {
             validate_client_field_definition_selections_exist_and_types_match(
                 schema_data,
@@ -551,8 +554,9 @@ fn validate_client_field_selection_set(
                 parent_object,
                 server_fields,
                 client_field_args,
-                unvalidated_client_field.variable_definitions,
+                &unvalidated_client_field.variable_definitions,
                 unvalidated_client_field.name,
+                client_fields,
             )
             .map_err(|errs| {
                 errs.into_iter().map(|err| {
@@ -568,6 +572,7 @@ fn validate_client_field_selection_set(
 
     let refetch_strategy_result = unvalidated_client_field
         .refetch_strategy
+        .as_ref()
         .map(|refetch_strategy| match refetch_strategy {
             RefetchStrategy::UseRefetchField(use_refetch_field_strategy) => {
                 Ok::<_, Vec<WithLocation<ValidateSchemaError>>>(RefetchStrategy::UseRefetchField(
@@ -578,6 +583,7 @@ fn validate_client_field_selection_set(
                         parent_object,
                         unvalidated_client_field.name,
                         client_field_args,
+                        client_fields,
                     )?,
                 ))
             }
@@ -592,8 +598,8 @@ fn validate_client_field_selection_set(
         name: unvalidated_client_field.name,
         id: unvalidated_client_field.id,
         reader_selection_set: selection_set,
-        unwraps: unvalidated_client_field.unwraps,
-        variant: unvalidated_client_field.variant,
+        unwraps: unvalidated_client_field.unwraps.clone(),
+        variant: unvalidated_client_field.variant.clone(),
         variable_definitions,
         type_and_field: unvalidated_client_field.type_and_field,
         parent_object_id: unvalidated_client_field.parent_object_id,
@@ -605,20 +611,22 @@ fn validate_client_field_selection_set(
 /// id's with each selection in the refetch_selection_set
 fn validate_use_refetch_field_strategy(
     schema_data: &ServerFieldData,
-    use_refetch_field_strategy: UnvalidatedRefetchFieldStrategy,
+    use_refetch_field_strategy: &UnvalidatedRefetchFieldStrategy,
     server_fields: &[ValidatedSchemaServerField],
     parent_object: &SchemaObject,
     client_field_name: SelectableFieldName,
     client_field_args: &ClientFieldArgsMap,
+    client_fields: &[UnvalidatedClientField],
 ) -> Result<ValidatedRefetchFieldStrategy, Vec<WithLocation<ValidateSchemaError>>> {
     let refetch_selection_set = validate_client_field_definition_selections_exist_and_types_match(
         schema_data,
-        use_refetch_field_strategy.refetch_selection_set,
+        &use_refetch_field_strategy.refetch_selection_set,
         parent_object,
         server_fields,
         client_field_args,
-        vec![],
+        &vec![],
         client_field_name,
+        client_fields,
     )
     .map_err(|errs| {
         errs.into_iter()
@@ -635,7 +643,7 @@ fn validate_use_refetch_field_strategy(
     Ok(ValidatedRefetchFieldStrategy {
         refetch_selection_set,
         root_fetchable_type: use_refetch_field_strategy.root_fetchable_type,
-        generate_refetch_query: use_refetch_field_strategy.generate_refetch_query,
+        generate_refetch_query:  use_refetch_field_strategy.generate_refetch_query.clone_box(),
         refetch_query_name: use_refetch_field_strategy.refetch_query_name,
     })
 }
@@ -789,12 +797,13 @@ enum ValidateSelectionsError {
 
 fn validate_client_field_definition_selections_exist_and_types_match(
     schema_data: &ServerFieldData,
-    selection_set: Vec<WithSpan<UnvalidatedSelection>>,
+    selection_set: &Vec<WithSpan<UnvalidatedSelection>>,
     parent_object: &SchemaObject,
     server_fields: &[ValidatedSchemaServerField],
     client_field_args: &ClientFieldArgsMap,
-    variable_definitions: Vec<WithSpan<UnvalidatedVariableDefinition>>,
+    variable_definitions: &Vec<WithSpan<UnvalidatedVariableDefinition>>,
     client_field_name: SelectableFieldName,
+    client_fields: &[UnvalidatedClientField],
 ) -> Result<Vec<WithSpan<ValidatedSelection>>, Vec<WithLocation<ValidateSelectionsError>>> {
     // Currently, we only check that each field exists and has an appropriate type, not that
     // there are no selection conflicts due to aliases or parameters.
@@ -804,20 +813,21 @@ fn validate_client_field_definition_selections_exist_and_types_match(
     let validated_selection_set_result =
         get_all_errors_or_all_ok(selection_set.into_iter().map(|selection| {
             validate_client_field_definition_selection_exists_and_type_matches(
-                selection,
+                selection.clone(),
                 parent_object,
                 schema_data,
                 server_fields,
                 client_field_args,
                 &mut used_variables,
                 &variable_definitions,
+                client_fields,
             )
         }));
 
     let (validated_selection_set, _) = get_all_errors_or_tuple_ok(
         validated_selection_set_result,
         validate_all_variables_are_used(
-            variable_definitions,
+            variable_definitions.to_vec(),
             used_variables,
             parent_object.name,
             client_field_name,
@@ -836,6 +846,7 @@ fn validate_client_field_definition_selection_exists_and_type_matches(
     client_field_args: &ClientFieldArgsMap,
     used_variables: &mut UsedVariables,
     variable_definitions: &[WithSpan<UnvalidatedVariableDefinition>],
+    client_fields: &[UnvalidatedClientField],
 ) -> ValidateSelectionsResult<WithSpan<ValidatedSelection>> {
     let mut used_variables2 = BTreeSet::new();
 
@@ -862,6 +873,7 @@ fn validate_client_field_definition_selection_exists_and_type_matches(
                         client_field_args,
                         &mut used_variables2,
                         variable_definitions,
+                        client_fields,
                     )
                 },
             )
@@ -1013,6 +1025,7 @@ fn validate_field_type_exists_and_is_linked(
     client_field_args: &ClientFieldArgsMap,
     used_variables: &mut UsedVariables,
     variable_definitions: &[WithSpan<UnvalidatedVariableDefinition>],
+    client_fields: &[UnvalidatedClientField],
 ) -> ValidateSelectionsResult<ValidatedLinkedFieldSelection> {
     let linked_field_name = linked_field_selection.name.item.into();
     match (parent_object.encountered_fields).get(&linked_field_name) {
@@ -1059,7 +1072,8 @@ fn validate_field_type_exists_and_is_linked(
                                             server_fields,
                                             client_field_args,
                                             used_variables,
-                                            variable_definitions
+                                            variable_definitions,
+                                            client_fields
                                         )
                                     },
                                 ).collect::<Result<Vec<_>, _>>()?,
@@ -1084,13 +1098,21 @@ fn validate_field_type_exists_and_is_linked(
                     }
                 }
             }
-            FieldType::ClientField(_) => Err(WithLocation::new(
-                ValidateSelectionsError::FieldSelectedAsLinkedButTypeIsClientField {
-                    field_parent_type_name: parent_object.name,
-                    field_name: linked_field_name,
-                },
-                linked_field_selection.name.location,
-            )),
+            FieldType::ClientField(client_field_id) => {
+                let client_field = &client_fields[client_field_id.as_usize()];
+
+                match client_field.variant {
+                    ClientFieldVariant::ClientPointer(_client_pointer_id) => todo!(),
+                    ClientFieldVariant::ImperativelyLoadedField(_)
+                    | ClientFieldVariant::UserWritten(_) => Err(WithLocation::new(
+                        ValidateSelectionsError::FieldSelectedAsLinkedButTypeIsClientField {
+                            field_parent_type_name: parent_object.name,
+                            field_name: linked_field_name,
+                        },
+                        linked_field_selection.name.location,
+                    )),
+                }
+            }
         },
         None => Err(WithLocation::new(
             ValidateSelectionsError::FieldDoesNotExist(parent_object.name, linked_field_name),
@@ -1151,6 +1173,7 @@ pub fn categorize_field_loadability<'a>(
         ClientFieldVariant::ImperativelyLoadedField(i) => {
             Some(Loadability::ImperativelyLoadedField(i))
         }
+        ClientFieldVariant::ClientPointer(_) => None,
     }
 }
 

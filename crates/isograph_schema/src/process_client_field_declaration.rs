@@ -4,8 +4,7 @@ use common_lang_types::{
 };
 use intern::string_key::Intern;
 use isograph_lang_types::{
-    ArgumentKeyAndValue, ClientFieldDeclaration, ClientFieldDeclarationWithValidatedDirectives,
-    DeserializationError, NonConstantValue, SelectableServerFieldId, ServerObjectId,
+    ArgumentKeyAndValue, ClientFieldDeclaration, ClientFieldDeclarationWithValidatedDirectives, ClientPointerId, DeserializationError, NonConstantValue, SelectableServerFieldId, ServerObjectId
 };
 use lazy_static::lazy_static;
 use thiserror::Error;
@@ -198,6 +197,7 @@ pub struct UserWrittenClientFieldInfo {
 pub enum ClientFieldVariant {
     UserWritten(UserWrittenClientFieldInfo),
     ImperativelyLoadedField(ImperativelyLoadedFieldVariant),
+    ClientPointer(ClientPointerId)
 }
 
 lazy_static! {

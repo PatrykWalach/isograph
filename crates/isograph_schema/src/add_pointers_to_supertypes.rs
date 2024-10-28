@@ -2,10 +2,9 @@ use common_lang_types::ClientPointerFieldName;
 use intern::string_key::Intern;
 
 use crate::{
-    generate_refetch_field_strategy, id_arguments, id_selection, id_top_level_arguments,
-    ClientField, ClientPointer, ImperativelyLoadedFieldVariant, ObjectTypeAndFieldName,
-    ProcessTypeDefinitionResult, RefetchStrategy, RequiresRefinement,
-    TypeRefinementMap, UnvalidatedSchema, NODE_FIELD_NAME,
+    generate_refetch_field_strategy, id_selection, id_top_level_arguments, ClientField,
+    ClientPointer, ObjectTypeAndFieldName, ProcessTypeDefinitionResult, RefetchStrategy,
+    RequiresRefinement, TypeRefinementMap, UnvalidatedSchema, NODE_FIELD_NAME,
 };
 
 impl UnvalidatedSchema {
@@ -23,6 +22,8 @@ impl UnvalidatedSchema {
             let field_name: ClientPointerFieldName = format!("as{}", subtype.name).intern().into();
 
             let next_client_field_id = self.client_fields.len().into();
+            let next_client_pointer_id = self.client_pointers.len().into();
+
             let client_field = ClientField {
                 description: Some(
                     format!("A client poiter for the {} type.", subtype.name)
@@ -54,21 +55,12 @@ impl UnvalidatedSchema {
                 },
                 variable_definitions: vec![],
                 unwraps: vec![],
-                variant: crate::ClientFieldVariant::ImperativelyLoadedField(
-                    ImperativelyLoadedFieldVariant {
-                        client_field_selection_name: field_name.into(),
-                        top_level_schema_field_name: *NODE_FIELD_NAME,
-                        top_level_schema_field_arguments: id_arguments(),
-                        top_level_schema_field_concrete_type: None,
-                        primary_field_info: None,
-                        root_object_id: query_id,
-                    },
-                ),
+                variant: crate::ClientFieldVariant::ClientPointer(next_client_pointer_id),
             };
 
             let client_pointer = ClientPointer {
                 description: client_field.description,
-                id: self.client_pointers.len().into(),
+                id: next_client_pointer_id,
                 name: field_name,
                 parent_object_id: subtype.id,
                 reader_selection_set: None,
