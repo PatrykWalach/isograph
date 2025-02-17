@@ -1,7 +1,7 @@
 Ok(
     (
         RelativePathToSourceFile(
-            "crates/isograph_lang_parser/fixtures/field-args-obj.input.js",
+            "\\\\?\\E:\\projekty-next\\isograph\\crates\\isograph_lang_parser\\fixtures\\field-args-obj.input.js",
         ),
         [
             (
@@ -40,7 +40,7 @@ Ok(
                                                         text_source: TextSource {
                                                             current_working_directory: CurrentWorkingDirectory,
                                                             relative_path_to_source_file: RelativePathToSourceFile(
-                                                                "crates/isograph_lang_parser/fixtures/field-args-obj.input.js",
+                                                                "\\\\?\\E:\\projekty-next\\isograph\\crates\\isograph_lang_parser\\fixtures\\field-args-obj.input.js",
                                                             ),
                                                             span: Some(
                                                                 Span {
@@ -68,7 +68,7 @@ Ok(
                                                             text_source: TextSource {
                                                                 current_working_directory: CurrentWorkingDirectory,
                                                                 relative_path_to_source_file: RelativePathToSourceFile(
-                                                                    "crates/isograph_lang_parser/fixtures/field-args-obj.input.js",
+                                                                    "\\\\?\\E:\\projekty-next\\isograph\\crates\\isograph_lang_parser\\fixtures\\field-args-obj.input.js",
                                                                 ),
                                                                 span: Some(
                                                                     Span {
@@ -99,7 +99,7 @@ Ok(
                                                                     text_source: TextSource {
                                                                         current_working_directory: CurrentWorkingDirectory,
                                                                         relative_path_to_source_file: RelativePathToSourceFile(
-                                                                            "crates/isograph_lang_parser/fixtures/field-args-obj.input.js",
+                                                                            "\\\\?\\E:\\projekty-next\\isograph\\crates\\isograph_lang_parser\\fixtures\\field-args-obj.input.js",
                                                                         ),
                                                                         span: Some(
                                                                             Span {
@@ -123,7 +123,7 @@ Ok(
                                                                                     text_source: TextSource {
                                                                                         current_working_directory: CurrentWorkingDirectory,
                                                                                         relative_path_to_source_file: RelativePathToSourceFile(
-                                                                                            "crates/isograph_lang_parser/fixtures/field-args-obj.input.js",
+                                                                                            "\\\\?\\E:\\projekty-next\\isograph\\crates\\isograph_lang_parser\\fixtures\\field-args-obj.input.js",
                                                                                         ),
                                                                                         span: Some(
                                                                                             Span {
@@ -148,7 +148,7 @@ Ok(
                                                                                     text_source: TextSource {
                                                                                         current_working_directory: CurrentWorkingDirectory,
                                                                                         relative_path_to_source_file: RelativePathToSourceFile(
-                                                                                            "crates/isograph_lang_parser/fixtures/field-args-obj.input.js",
+                                                                                            "\\\\?\\E:\\projekty-next\\isograph\\crates\\isograph_lang_parser\\fixtures\\field-args-obj.input.js",
                                                                                         ),
                                                                                         span: Some(
                                                                                             Span {
@@ -188,7 +188,7 @@ Ok(
                             directives: [],
                             variable_definitions: [],
                             definition_path: RelativePathToSourceFile(
-                                "crates/isograph_lang_parser/fixtures/field-args-obj.input.js",
+                                "\\\\?\\E:\\projekty-next\\isograph\\crates\\isograph_lang_parser\\fixtures\\field-args-obj.input.js",
                             ),
                             field_keyword: WithSpan {
                                 item: (),
@@ -214,7 +214,7 @@ Ok(
                 TextSource {
                     current_working_directory: CurrentWorkingDirectory,
                     relative_path_to_source_file: RelativePathToSourceFile(
-                        "crates/isograph_lang_parser/fixtures/field-args-obj.input.js",
+                        "\\\\?\\E:\\projekty-next\\isograph\\crates\\isograph_lang_parser\\fixtures\\field-args-obj.input.js",
                     ),
                     span: Some(
                         Span {

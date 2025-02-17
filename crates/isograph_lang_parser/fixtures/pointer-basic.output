@@ -1,7 +1,7 @@
 Ok(
     (
         RelativePathToSourceFile(
-            "crates/isograph_lang_parser/fixtures/pointer-basic.input.js",
+            "\\\\?\\E:\\projekty-next\\isograph\\crates\\isograph_lang_parser\\fixtures\\pointer-basic.input.js",
         ),
         [
             (
@@ -54,7 +54,7 @@ Ok(
                                                         text_source: TextSource {
                                                             current_working_directory: CurrentWorkingDirectory,
                                                             relative_path_to_source_file: RelativePathToSourceFile(
-                                                                "crates/isograph_lang_parser/fixtures/pointer-basic.input.js",
+                                                                "\\\\?\\E:\\projekty-next\\isograph\\crates\\isograph_lang_parser\\fixtures\\pointer-basic.input.js",
                                                             ),
                                                             span: Some(
                                                                 Span {
@@ -85,7 +85,7 @@ Ok(
                                                                         text_source: TextSource {
                                                                             current_working_directory: CurrentWorkingDirectory,
                                                                             relative_path_to_source_file: RelativePathToSourceFile(
-                                                                                "crates/isograph_lang_parser/fixtures/pointer-basic.input.js",
+                                                                                "\\\\?\\E:\\projekty-next\\isograph\\crates\\isograph_lang_parser\\fixtures\\pointer-basic.input.js",
                                                                             ),
                                                                             span: Some(
                                                                                 Span {
@@ -124,7 +124,7 @@ Ok(
                                                                         text_source: TextSource {
                                                                             current_working_directory: CurrentWorkingDirectory,
                                                                             relative_path_to_source_file: RelativePathToSourceFile(
-                                                                                "crates/isograph_lang_parser/fixtures/pointer-basic.input.js",
+                                                                                "\\\\?\\E:\\projekty-next\\isograph\\crates\\isograph_lang_parser\\fixtures\\pointer-basic.input.js",
                                                                             ),
                                                                             span: Some(
                                                                                 Span {
@@ -167,7 +167,7 @@ Ok(
                             ],
                             variable_definitions: [],
                             definition_path: RelativePathToSourceFile(
-                                "crates/isograph_lang_parser/fixtures/pointer-basic.input.js",
+                                "\\\\?\\E:\\projekty-next\\isograph\\crates\\isograph_lang_parser\\fixtures\\pointer-basic.input.js",
                             ),
                             pointer_keyword: WithSpan {
                                 item: (),
@@ -193,7 +193,7 @@ Ok(
                 TextSource {
                     current_working_directory: CurrentWorkingDirectory,
                     relative_path_to_source_file: RelativePathToSourceFile(
-                        "crates/isograph_lang_parser/fixtures/pointer-basic.input.js",
+                        "\\\\?\\E:\\projekty-next\\isograph\\crates\\isograph_lang_parser\\fixtures\\pointer-basic.input.js",
                     ),
                     span: Some(
                         Span {
